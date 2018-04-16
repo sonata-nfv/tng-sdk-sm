@@ -1,0 +1,3 @@
+[submodule "son-mano-framework"]
+	path = son-mano-framework
+	url = https://github.com/sonata-nfv/son-mano-framework.git
