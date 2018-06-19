@@ -14,11 +14,13 @@ This repository uses submodules. Clone it recursively to get all required conten
 ## Dependencies
 
 * python3.x
+* pip3
 * Docker
 * golang
 
 The specific managers for which we provide development and testing support in this 
-repository are developed with python3.
+repository are developed with `python3`. Install `pip3` to allow the tool to install
+the required packages. 
 
 The specific managers are embedded in docker containers. See https://docs.docker.com/install/
 to install Docker CE.
