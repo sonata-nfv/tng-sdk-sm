@@ -31,6 +31,12 @@ Set the GOPATH ENV parameter from the root of this repository
 
 	`export GOPATH=$(pwd)/go`
 
+Get the golang dependencies
+
+	`go get gopkg.in/yaml.v2`
+	`go get github.com/nu7hatch/gouuid`
+	`go get github.com/fatih/color`
+
 Build the project
 
 	`go build tng-sdk-sm`
