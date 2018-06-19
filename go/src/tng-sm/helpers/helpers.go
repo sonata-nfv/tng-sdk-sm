@@ -3,11 +3,14 @@ package helpers
 import (
 	"os"
 	"io/ioutil"
-	// "fmt"
+	"fmt"
 	"io"
 	"path/filepath"
 	"errors"
 	"strings"
+    "tng-sm/structs"
+    "gopkg.in/yaml.v2"
+	"github.com/nu7hatch/gouuid"
 	)
 
 func CreateDirectory(name, sm_type, path string) (directory string, err error) {
@@ -37,7 +40,9 @@ func CopyTemplate(sm_dir string) (err error) {
 	_, err = os.Stat(tmp_dir)
 
 	if err != nil {
-		return errors.New("son-sm-template unreachable. Is TNG_SM_PWD set?") 
+		// Delete the directory
+		os.Remove(sm_dir)
+		return errors.New("son-sm-template unreachable. TNG_SM_PWD set?") 
 	}
 
 	// list content of directory
@@ -63,6 +68,21 @@ func CopyTemplate(sm_dir string) (err error) {
 		}
 	}
 
+	return
+}
+
+func ReadFile(name string) (data []byte, err error) {
+	data, err = ioutil.ReadFile(name)
+	if err != nil {
+		err = errors.New("File unreadable")
+	}
+
+	return
+}
+
+func WriteFile(data []byte, name string) (err error) {
+
+	err = ioutil.WriteFile(name, data, 0644)
 	return
 }
 
@@ -246,4 +266,95 @@ func Exists(path string) (bool, error) {
     if err == nil { return true, nil }
     if os.IsNotExist(err) { return false, nil }
     return true, err
+}
+
+
+func GenerateNsrFromNsd(nsd_byte []byte) (nsr_byte []byte, err error) {
+
+	return
+}
+
+func GenerateVnfrFromVnfd(vnfd_byte []byte) (vnfr_byte []byte, err error){
+
+	//declaring
+	vnfd := structs.Vnfd{}
+    vnfr := structs.Vnfr{}
+    u, err := uuid.NewV4()
+
+	err = yaml.Unmarshal(vnfd_byte, &vnfd)
+    if err != nil {
+            fmt.Printf("Error parsing VNFD: %v\n", err)
+            return
+    }
+    // fmt.Printf("--- t:\n%v\n\n", vnfd)
+
+    // VNFD commons
+    vnfr.DescriptorVersion = vnfd.DescriptorVersion
+    vnfr.VirtualLinks = vnfd.VirtualLinks
+
+    numberVdu := len(vnfd.VirtualDeploymentUnits)
+
+    for i:= 0; i<numberVdu; i++ {
+    	vnfdVdu := *vnfd.VirtualDeploymentUnits[i]
+    	vnfrVdu := structs.VnfrVirtualDeploymentUnits{}
+
+    	vnfrVdu.ResourceRequirements = vnfdVdu.ResourceRequirements
+    	vnfrVdu.VmImage = vnfdVdu.VmImage
+    	vnfrVdu.Id = vnfdVdu.Id
+    	vnfrVdu.NumberOfInstances = 1
+    	vnfrVdu.VduReference = vnfd.Name + ":" + vnfdVdu.Id
+
+    	vnfc := structs.VnfcInstance{}
+    	numberCp := len(vnfdVdu.ConnectionPoints)
+
+    	for j:= 0; j<numberCp; j++ {
+    		vnfdCp := *vnfdVdu.ConnectionPoints[j]
+    		vnfrCp := structs.VnfrConnectionPoints{}
+
+    		vnfrCp.Id = vnfdCp.Id
+    		vnfrCp.Type = vnfdCp.Type
+
+    		vnfrInterface := structs.VnfrInterface{}
+    		vnfrInterface.Address = "<ENTER IP ADDRESS HERE>"
+    		vnfrInterface.HardwareAddress = "<ENTER MAC ADDRESS HERE>"
+    		vnfrInterface.Netmask = "<ENTER NETMASK HERE>"
+
+    		vnfrCp.Interface = &vnfrInterface
+
+    		vnfc.ConnectionPoints = append(vnfc.ConnectionPoints, &vnfrCp)
+    	}
+
+    	u, err = uuid.NewV4()
+    	vnfc.VimId = u.String()
+    	vnfc.Id = "0"
+
+    	vnfrVdu.VnfcInstance = append(vnfrVdu.VnfcInstance, &vnfc)
+    	vnfr.VirtualDeploymentUnits = append(vnfr.VirtualDeploymentUnits, &vnfrVdu)
+    }
+
+    // VNFR uniques
+    vnfr.Version = "1"
+    vnfr.Status = "normal operation"
+
+    u, err = uuid.NewV4()
+    vnfr.Id = u.String()
+
+    u, err = uuid.NewV4()
+    vnfr.DescriptorReference = u.String()
+
+    vnfr_byte, err = yaml.Marshal(&vnfr)
+	fmt.Printf("\n%s\n", vnfr)
+
+    return
+}
+
+func GenerateStartStopOutput(vnfd_byte []byte, vnfr_byte []byte) (output_byte []byte, err error){
+
+	output := structs.StartStop{}
+	err = yaml.Unmarshal(vnfd_byte, &output.Vnfd)
+	err = yaml.Unmarshal(vnfr_byte, &output.Vnfr)
+
+    output_byte, err = yaml.Marshal(&output)
+
+	return
 }
