@@ -41,11 +41,11 @@ Get the golang dependencies
 
 Build the project
 
-	go build tng-sdk-sm
+	go build tng-sm
 
 Install the project
 
-	go install tng-sdk-sm
+	go install tng-sm
 
 In order to test the specific managers natively, your python environment needs to be
 configured. Execute
