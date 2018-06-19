@@ -55,7 +55,7 @@ setup(
     keywords='NFV orchestrator customisation',
 
     packages=find_packages(),
-    install_requires=['amqpstorm', 'PyYAML'],
+    install_requires=['amqpstorm', 'PyYAML', 'paramiko'],
     setup_requires=['pytest-runner'],
 
     # To provide executable scripts, use entry points in preference to the
