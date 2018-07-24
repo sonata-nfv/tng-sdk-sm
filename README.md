@@ -1,3 +1,5 @@
+<p align="center"><img src="https://github.com/sonata-nfv/tng-api-gtw/wiki/images/sonata-5gtango-logo-500px.png" /></p>
+
 # tng-sdk-sm
 
 5GTANGO SDK Specific Manager develop and test framework. The 5GTANGO SP supports
