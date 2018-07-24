@@ -137,4 +137,7 @@ The CLI will return the output of the event.
 To delete this FSM, use
 
 	tng-sm delete foo-fsm
+	
+## License
 
+The 5GTANGO Repositories is published under Apache 2.0 license. Please see the LICENSE file for more details.
