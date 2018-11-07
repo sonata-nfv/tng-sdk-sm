@@ -311,12 +311,16 @@ func HandleExecuteArg(arg *flag.FlagSet, arg_list []string) () {
 	// Execute the command and capture the output
 	cmd_string := "import " + sm_name + "; import yaml; fsm=" + sm_name + "." + sm_name + "FSM();" + pyld_cmd + " event=fsm." + event_str + "(payload); print(\n\"Event output: \" + str(event))"
 	cmd:= exec.Command("python3", "-c", cmd_string)
-	cmd.Dir = code_dir 
+	cmd.Dir = code_dir
 	out, err := cmd.CombinedOutput()
 
 	if err != nil {
-		globals.RedBold.Printf("\nError occured when executing command. Python output: \n")
-		fmt.Printf("\n%s\n", out)
+		globals.RedBold.Printf("\nError occured when executing command. Error:\n")
+		fmt.Printf("%s\n", err)
+		globals.RedBold.Printf("Python output:\n")
+		fmt.Printf("%s\n", out)
+		globals.RedBold.Printf("Python code:\n")
+		fmt.Printf("%s\n", cmd_string)
 		os.Exit(1)
 	} else {
 		globals.GreenBold.Printf("\nCommand executed successfully. Python output: \n")
