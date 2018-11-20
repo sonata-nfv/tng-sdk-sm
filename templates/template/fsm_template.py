@@ -45,7 +45,7 @@ logging.getLogger("son-mano-base:messaging").setLevel(logging.INFO)
 
 class <name>FSM(smbase):
 
-    def __init__(self):
+    def __init__(self, connect_to_broker=True):
 
         """
         :param specific_manager_type: specifies the type of specific manager
@@ -67,7 +67,8 @@ class <name>FSM(smbase):
         self.sm_version = "0.1"
 
         super(self.__class__, self).__init__(sm_name=self.sm_name,
-                                             sm_version=self.sm_version)
+                                             sm_version=self.sm_version,
+                                             connect_to_broker=connect_to_broker)
 
     def on_registration_ok(self):
 

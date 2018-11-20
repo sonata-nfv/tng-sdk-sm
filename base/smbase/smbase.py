@@ -50,7 +50,9 @@ class smbase(object):
     def __init__(self,
                  sm_name= None,
                  sm_version= None,
-                 description=None):
+                 description=None,
+                 connect_to_broker=True,
+                 register=True):
         """
         :param specific_manager_type: specifies the type of specific manager that could be either fsm or ssm.
         :param service_name: the name of the service that this specific manager belongs to.
@@ -64,7 +66,7 @@ class smbase(object):
         :param description: description
         """
 
-        #Populating SSM-FSM fileds
+        #Populating SSM-FSM fields
         self.sm_name = sm_name
         self.sm_version = sm_version
         self.description = description
@@ -73,13 +75,17 @@ class smbase(object):
 
         LOG.info("Starting specific manager with name: " + self.sm_name)
 
-        # # create and initialize broker connection
-        # self.manoconn = messaging.ManoBrokerRequestResponseConnection(self.specific_manager_id)
+        # create and initialize broker connection
+        if connect_to_broker:
+            self.manoconn = messaging.ManoBrokerRequestResponseConnection(self.sm_name + '-' + str(self.sfuuid))
+            LOG.info("Specific manager connected to broker.")
 
-        # self.wait_for_event = threading.Event()
-        # self.wait_for_event.clear()
+        # register only of there is a broker connection
+        if connect_to_broker and register:
+            self.wait_for_event = threading.Event()
+            self.wait_for_event.clear()
 
-        # self.registration()
+            self.registration()
 
     def registration(self):
 
@@ -93,14 +99,8 @@ class smbase(object):
         else:
             self.sfuuid = ''
 
-        message = {'specific_manager_type': self.specific_manager_type,
-                   'service_name': self.service_name,
-                   'function_name': self.function_name,
-                   'specific_manager_name': self.specific_manager_name,
-                   'specific_manager_id': self.specific_manager_id,
-                   'update_version': self.update_version,
-                   'version': self.version,
-                   'description': self.description,
+        message = {'specific_manager_id': self.sm_name,
+                   'version': self.sm_version,
                    "sf_uuid": self.sfuuid}
 
         self.manoconn.call_async(self._on_registration_response,

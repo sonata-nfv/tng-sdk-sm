@@ -33,20 +33,26 @@
 FROM python:3.4-slim
 MAINTAINER SONATA
 
+RUN apt-get update && apt-get install -y python-pip ssh && \
+pip install paramiko
+RUN apt-get install python2.7
+
 # configrurations
 ENV broker_host amqp://guest:guest@broker:5672/%2F
 ENV broker_exchange son-kernel
 
-ADD son-sm-template /son-sm-template
+ADD base /base
 ADD son-mano-framework/son-mano-base /son-mano-base
-ADD utils/delayedstart.sh /delayedstart.sh
+ADD <name>-fsm /<name>
 
 WORKDIR /son-mano-base
 Run python setup.py install
 
-WORKDIR /son-sm-template
-RUN python setup.py develop
+WORKDIR /base
+RUN python setup.py install
 
+WORKDIR /<name>
+RUN python setup.py install
 
-CMD [<name>]
+CMD ["<name>"]
 

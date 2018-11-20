@@ -309,7 +309,7 @@ func HandleExecuteArg(arg *flag.FlagSet, arg_list []string) () {
 	} 
 
 	// Execute the command and capture the output
-	cmd_string := "import " + sm_name + "; import yaml; fsm=" + sm_name + "." + sm_name + "FSM();" + pyld_cmd + " event=fsm." + event_str + "(payload); print(\n\"Event output: \" + str(event))"
+	cmd_string := "import " + sm_name + "; import yaml; fsm=" + sm_name + "." + sm_name + "FSM(connect_to_broker=False);" + pyld_cmd + " event=fsm." + event_str + "(payload); print(\n\"Event output: \" + str(event))"
 	cmd:= exec.Command("python3", "-c", cmd_string)
 	cmd.Dir = code_dir
 	out, err := cmd.CombinedOutput()
