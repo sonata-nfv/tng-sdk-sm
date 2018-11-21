@@ -35,7 +35,7 @@ package helpers
 import (
 	"os"
 	"io/ioutil"
-	"fmt"
+	// "fmt"
 	"io"
 	"path/filepath"
 	"errors"
@@ -43,23 +43,19 @@ import (
     "tng-sm/structs"
     "gopkg.in/yaml.v2"
 	"github.com/nu7hatch/gouuid"
+	"archive/zip"
 	)
 
-func CreateDirectory(name, sm_type, path string) (directory string, err error) {
+func CreateDirectory(name, path string) (directory string, err error) {
 
-	// TODO: Do we need to overwrite if the directory already exists?
-	directory_name := name + "-" + sm_type
-	directory = filepath.Join(path, directory_name)
-	os.Mkdir(directory, os.FileMode(0777))
+	directory = filepath.Join(path, name)
+	exists, err := Exists(directory)
+	if !exists {
+		os.Mkdir(directory, os.FileMode(0777))
+	}
 
 	return
 }	
-
-func RemoveDirectory(name string) (err error) {
-
-	//TODO: remove the directory at the path
-	return
-}
 
 func CopyTemplate(sm_dir string) (err error) {
 
@@ -268,7 +264,7 @@ func ReplaceTagInFile(old_tag, new_tag, filepath string) (err error) {
     return
 }
 
-func RemoveContents(dir string) (err error) {
+func RemoveDir(dir string) (err error) {
     d, err := os.Open(dir)
     if err != nil {
         return
@@ -315,7 +311,6 @@ func GenerateVnfrFromVnfd(vnfd_byte []byte) (vnfr_byte []byte, err error){
 
 	err = yaml.Unmarshal(vnfd_byte, &vnfd)
     if err != nil {
-            fmt.Printf("Error parsing VNFD: %v\n", err)
             return
     }
     // fmt.Printf("--- t:\n%v\n\n", vnfd)
@@ -375,7 +370,6 @@ func GenerateVnfrFromVnfd(vnfd_byte []byte) (vnfr_byte []byte, err error){
     vnfr.DescriptorReference = u.String()
 
     vnfr_byte, err = yaml.Marshal(&vnfr)
-	fmt.Printf("\n%s\n", vnfr)
 
     return
 }
@@ -390,3 +384,125 @@ func GenerateStartStopOutput(vnfd_byte []byte, vnfr_byte []byte) (output_byte []
 
 	return
 }
+
+func GenerateConfigureOutput(vnfds []string) (output_byte []byte, err error){
+
+	output:= structs.Configure{}
+	for _, vnfd_file := range vnfds {
+
+		vnfd_byte,_ := ReadFile(vnfd_file)
+		vnfd := structs.Vnfd{}
+		err = yaml.Unmarshal(vnfd_byte, &vnfd)
+		output.Vnfds = append(output.Vnfds, &vnfd)
+
+	    vnfr := structs.Vnfr{}
+	    vnfr_byte,_ := GenerateVnfrFromVnfd(vnfd_byte)
+		err = yaml.Unmarshal(vnfr_byte, &vnfr)
+		output.Vnfrs = append(output.Vnfrs, &vnfr)
+	}
+
+	output_byte, err = yaml.Marshal(&output)
+	return
+}
+
+func Unzip(src string, dest string) ([]string, error) {
+
+    var filenames []string
+
+    r, err := zip.OpenReader(src)
+    if err != nil {
+        return filenames, err
+    }
+    defer r.Close()
+
+    for _, f := range r.File {
+
+        rc, err := f.Open()
+        if err != nil {
+            return filenames, err
+        }
+        defer rc.Close()
+
+        // Store filename/path for returning and using later on
+        fpath := filepath.Join(dest, f.Name)
+
+        if f.FileInfo().IsDir() {
+
+            // Make Folder
+            os.MkdirAll(fpath, os.ModePerm)
+
+        } else {
+
+	        filenames = append(filenames, fpath)
+
+            // Make File
+            if err = os.MkdirAll(filepath.Dir(fpath), os.ModePerm); err != nil {
+                return filenames, err
+            }
+
+            outFile, err := os.OpenFile(fpath, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, f.Mode())
+            if err != nil {
+                return filenames, err
+            }
+
+            _, err = io.Copy(outFile, rc)
+
+            // Close the file without defer to close before next iteration of loop
+            outFile.Close()
+
+            if err != nil {
+                return filenames, err
+            }
+
+        }
+    }
+    return filenames, nil
+}
+
+
+func GetPd(filepath string) (pd structs.PackageDescriptor, err error) {
+
+		data, err := ReadFile(filepath)
+		if err != nil {
+			return
+		}
+
+		err = yaml.Unmarshal(data, &pd)
+		return
+}
+
+
+func GetVnfdsFromPackage(dir string, pd structs.PackageDescriptor) (filepath_out []string, err error){
+
+	for _, artefact := range pd.PackageContent {
+
+		content := *artefact
+		type_seg := strings.Split(content.ContentType, ".")
+
+		if type_seg[len(type_seg) -1] == "vnfd" && type_seg[len(type_seg) -2] == "5gtango" {
+			filepath_out = append(filepath_out, filepath.Join(dir, content.Source))
+		}
+	}
+
+	if len(filepath_out) < 1 {
+		err = errors.New("No vnfd in package")
+	}
+
+	return
+} 
+
+func GetNsdFromPackage(dir string, pd structs.PackageDescriptor) (filepath_out string, err error){
+
+	for _, artefact := range pd.PackageContent {
+
+		content := *artefact
+		type_seg := strings.Split(content.ContentType, ".")
+
+		if type_seg[len(type_seg) -1] == "nsd" && type_seg[len(type_seg) -2] == "5gtango" {
+			filepath_out = filepath.Join(dir, content.Source)
+			return
+		}
+	}
+	err = errors.New("No nsd in package")
+	return
+} 

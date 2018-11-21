@@ -43,7 +43,7 @@ import (
     "os/exec"
 )
 
-var Version = "1.0"
+var Version = "1.1"
 
 func main() {
 
@@ -100,23 +100,24 @@ func UsageMessage(f *flag.FlagSet){
 		fmt.Printf("    new            Create a new specific manager\n")
 		fmt.Printf("    delete         Delete an existing specific manager\n")
 		fmt.Printf("    execute        Execute an event of a specific manager\n")
-		fmt.Printf("    generate       Generate artefacts to be used when executing specific managers\n")
+		fmt.Printf("    generate       Generates a set of artefacts to be used as inputs when executing\n")
+		fmt.Printf("                   specific managers\n")
 		fmt.Printf("\n")
-		fmt.Printf("usage: tng-sm new <specific manager name>\n\n")
+		fmt.Printf("usage: tng-sm new [OPTIONS] <specific manager name>\n\n")
 		fmt.Printf("    --path         Path where new specific manager should be stored\n")
 		fmt.Printf("    --type         Type of specific manager to be created: \"ssm\" or \"fsm\"\n")
 		fmt.Printf("\n")
-		fmt.Printf("usage: tng-sm delete <specific manager name>\n\n")
+		fmt.Printf("usage: tng-sm delete [OPTIONS] <specific manager name>\n\n")
 		fmt.Printf("    --path         Path where specific manager can be found\n")
 		fmt.Printf("\n")
-		fmt.Printf("usage: tng-sm execute <specific manager name>\n\n")
+		fmt.Printf("usage: tng-sm execute [OPTIONS] <specific manager name>\n\n")
 		fmt.Printf("    --path         Path where specific manager can be found\n")
 		fmt.Printf("    --event        Event that needs to be executed: \"start\", \"stop\" or \"configure\"\n")
 		fmt.Printf("    --payload      Payload for the execution\n")
 		fmt.Printf("\n")
-		fmt.Printf("usage: tng-sm generate <name output file>\n\n")
-		fmt.Printf("    --type         Type of payload to be generated: \"vnfr\" or \"nsr\"\n")
-		fmt.Printf("    --descriptor   File that serves as input for generation, should be a vnfd or nsd\n")
+		fmt.Printf("usage: tng-sm generate [OPTIONS] <name output file>\n\n")
+		fmt.Printf("    --type         Type of specific manager the payload is for: \"fsm\" or \"ssm\"\n")
+		fmt.Printf("    --input        Type of input file: \"descriptor\" or \"package\"\n")
 		fmt.Printf("\n")
 	}
 
@@ -172,14 +173,14 @@ func HandleNewArg(arg *flag.FlagSet, arg_list []string) () {
 	}
 
 	// Create the directory
-	directory, err := helpers.CreateDirectory(name, *newTypePtr, *newPathPtr)
+	directory, err := helpers.CreateDirectory(name + *newTypePtr, *newPathPtr)
 
 	// Copy the template to the new directory
 	err = helpers.CopyTemplate(directory)
 
 	if err != nil {
 		fmt.Println(err)
-		helpers.RemoveDirectory(directory)
+		helpers.RemoveDir(directory)
 		os.Exit(1)
 	}
 	// Customise the template
@@ -240,7 +241,7 @@ func HandleDeleteArg(arg *flag.FlagSet, arg_list []string) () {
 	}
 
 	// Delete the specific manager
-	err = helpers.RemoveContents(dir)
+	err = helpers.RemoveDir(dir)
 	if err != nil {
 		fmt.Printf("Specific manager deletion failed\n")
 		os.Exit(1)
@@ -336,55 +337,164 @@ func HandleExecuteArg(arg *flag.FlagSet, arg_list []string) () {
 func HandleGenerateArg(arg *flag.FlagSet, arg_list []string) () {
 
 	// Define possible flagsets
-	payloadTypePtr := arg.String("type", "", "Type of payload to be generated: 'vnfr' or 'nsr'")
-	payloadDescriptorPtr := arg.String("descriptor", "", "Descriptor used to generate the payload")
+	inputTypePtr := arg.String("input", "", "Type of input for the generation process: 'descriptor' or 'package'")
+	managerTypePtr := arg.String("type", "", "Type of manager that generated content is for: 'fsm' or 'ssm'")
 
 	arg.Parse(arg_list)	
 
 	// Check if name was provided for output file
 	if len(arg.Args()) != 1 {
-		fmt.Printf("Provide name for output file\n")
+		fmt.Printf("Generation failed. Provide input file.\n")
 		os.Exit(1)
 	} 
 
-	name := arg.Args()[0]
-
-	// Check if type of payload that is to be generated is provided
-	if *payloadTypePtr == "" {
-		arg.PrintDefaults()
+	// Check if input type is provided
+	if *inputTypePtr == "" {
+		fmt.Printf("Generation failed. Provide '--input' out of 'descriptor', 'package'.\n")
 		os.Exit(1)
 	}
 
-	// Check if descriptor is provided
-	if *payloadDescriptorPtr == "" {
-		arg.PrintDefaults()
-		os.Exit(1)
-	} 
-
-	data, err := helpers.ReadFile(*payloadDescriptorPtr)
-
-	// Check if provided descriptor is readable
-	if err != nil {
-		fmt.Printf("Provided descriptor is not readable.\n")
+	// Check if type is provided
+	if *managerTypePtr == "" {
+		fmt.Printf("Generation failed. Provide '--type' out of 'fsm', 'ssm'.\n")
 		os.Exit(1)
 	}
 
-	switch *payloadTypePtr {
-	case "nsr":
-		// nsr,_ := helpers.GenerateNsrFromNsd(data)
-		fmt.Printf("Functionality not yet supported.\n")
-	case "vnfr":
-		vnfr,_ := helpers.GenerateVnfrFromVnfd(data)
-		output,_ := helpers.GenerateStartStopOutput(data, vnfr)
-		err = helpers.WriteFile(output, name)
+	// declaring
+	inputFile := arg.Args()[0]
+	extension := filepath.Ext(inputFile)
+	outputName:= inputFile[0:len(inputFile)-len(extension)]
+	outputDirectory := outputName + "_payloads"
+	outputFiles := []string{}
 
+	if exists,_ := helpers.Exists(inputFile); !exists {
+		fmt.Printf("Provided input file does not exist.\n")
+		os.Exit(1)
+	}
+
+	// create directory for output files
+	helpers.CreateDirectory(outputDirectory, "")
+
+	switch *inputTypePtr {
+	case "package":
+
+		// Unzip the package at temporary location
+		tempLoc := "tng_sm_temp"
+		_, err := helpers.Unzip(inputFile, tempLoc)
 		if err != nil {
-			fmt.Printf("error when writing file: %s", err)
+			fmt.Printf("Unzipping of package failed. Is input file really a 5GTANGO package?\n")
+			os.Exit(1)
 		}
+
+		// process package descriptor
+		pd_path := "TOSCA-Metadata/NAPD.yaml"
+		total_path := filepath.Join(tempLoc, pd_path)
+		pd, err := helpers.GetPd(total_path)
+		if err != nil {
+			fmt.Printf("No valid package descriptor in package.\n")
+			os.Exit(1)
+		}
+
+		// // use package descriptor to get nsd and vnfd paths
+		// nsd_path, err := helpers.GetNsdFromPackage(tempLoc, pd)
+		// if err != nil {
+		// 	fmt.Printf("Couldn't retrieve nsd path from package.\n")
+		// 	os.Exit(1)			
+		// }
+		vnfd_paths, err := helpers.GetVnfdsFromPackage(tempLoc, pd)
+		if err != nil {
+			fmt.Printf("Couldn't retrieve vnfd paths from package.\n")
+			os.Exit(1)			
+		}
+
+		// write the vnfrs and the start/stop payloads
+		for _, vnfd_path := range vnfd_paths {
+			vnfd_byte, err := helpers.ReadFile(vnfd_path)
+			_, file := filepath.Split(vnfd_path)
+			if err != nil {
+				fmt.Printf("vnfd is not readable.\n")
+				os.Exit(1)
+			}
+			vnfr_byte,_ := helpers.GenerateVnfrFromVnfd(vnfd_byte)		
+			err = helpers.WriteFile(vnfr_byte, filepath.Join(outputDirectory, file + "_vnfr"))
+			outputFiles = append(outputFiles, filepath.Join(outputDirectory, file + "_vnfr"))
+
+			if err != nil {
+				fmt.Printf("error when writing vnfr to file.\n")
+				os.Exit(1)
+			}
+
+			output_byte,_ := helpers.GenerateStartStopOutput(vnfd_byte, vnfr_byte)
+			err = helpers.WriteFile(output_byte, filepath.Join(outputDirectory, file + "_start_stop"))
+			outputFiles = append(outputFiles, filepath.Join(outputDirectory, file + "_start_stop"))
+
+			if err != nil {
+				fmt.Printf("error when writing start/stop payload to file.\n")
+				os.Exit(1)
+			}
+		}
+
+		// write the configure payload
+		config_byte,_ := helpers.GenerateConfigureOutput(vnfd_paths)
+		err = helpers.WriteFile(config_byte, filepath.Join(outputDirectory, "ns_configure"))
+		outputFiles = append(outputFiles, filepath.Join(outputDirectory, "ns_configure"))
+
+		// cleanup temp directory
+		err = helpers.RemoveDir(tempLoc)
+
+	case "descriptor":
+		desc_byte, err := helpers.ReadFile(inputFile)
+
+		// Check if provided descriptor is readable
+		if err != nil {
+			fmt.Printf("Input file not readable.\n")
+			os.Exit(1)
+		}
+
+		switch *managerTypePtr {
+		case "fsm":
+			vnfr_byte,err := helpers.GenerateVnfrFromVnfd(desc_byte)
+			if err != nil {
+				fmt.Printf("Descriptor processing failed. Is input file really a vnfd?\n")
+				os.Exit(1)
+			}
+
+			// Generating vnfr
+			err = helpers.WriteFile(vnfr_byte, filepath.Join(outputDirectory, outputName + "_vnfr"))
+			outputFiles = append(outputFiles, filepath.Join(outputDirectory, outputName + "_vnfr"))
+
+			if err != nil {
+				fmt.Printf("error while writing vnfr to file.\n")
+				os.Exit(1)
+			}
+
+			// Generating start/stop payload
+			output_byte,_ := helpers.GenerateStartStopOutput(desc_byte, vnfr_byte)
+			err = helpers.WriteFile(output_byte, filepath.Join(outputDirectory, outputName + "_start_stop"))
+			outputFiles = append(outputFiles, filepath.Join(outputDirectory, outputName + "_start_stop"))
+
+			if err != nil {
+				fmt.Printf("error while writing start/stop payload to file.\n")
+				os.Exit(1)
+			}
+
+		case "ssm":
+			fmt.Printf("ssm payload generation not supported.\n")
+		default:
+			fmt.Printf(*managerTypePtr + " not supported as '--type'\n.")
+			os.Exit(1)
+		}
+
 	default:
-		fmt.Printf(*payloadTypePtr + " not supported as '--type'.\n")
+		fmt.Printf(*inputTypePtr + " not supported as '--input'.\n")
 	}
-	
+
+	fmt.Printf("The following files were generated:\n\n")
+	for _,filepath := range outputFiles {
+
+		fmt.Printf("    %s\n", filepath)
+	}
+	fmt.Printf("\n")
 
 	os.Exit(0)
 }
