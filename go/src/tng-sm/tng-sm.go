@@ -115,7 +115,7 @@ func UsageMessage(f *flag.FlagSet){
 		fmt.Printf("    --event        Event that needs to be executed: \"start\", \"stop\" or \"configure\"\n")
 		fmt.Printf("    --payload      Payload for the execution\n")
 		fmt.Printf("\n")
-		fmt.Printf("usage: tng-sm generate [OPTIONS] <name output file>\n\n")
+		fmt.Printf("usage: tng-sm generate [OPTIONS] <input file>\n\n")
 		fmt.Printf("    --type         Type of specific manager the payload is for: \"fsm\" or \"ssm\"\n")
 		fmt.Printf("    --input        Type of input file: \"descriptor\" or \"package\"\n")
 		fmt.Printf("\n")
