@@ -187,3 +187,9 @@ type StartStop struct {
   Vnfr *Vnfr `yaml:vnfr`
   Vnfd *Vnfd `yaml:vnfd`
 }
+
+// Configure
+type Configure struct {
+  Vnfrs []*Vnfr `yaml:vnfrs`
+  Vnfds []*Vnfd `yaml:vnfds`
+}
