@@ -173,18 +173,28 @@ func HandleNewArg(arg *flag.FlagSet, arg_list []string) () {
 	}
 
 	// Create the directory
-	directory, err := helpers.CreateDirectory(name + *newTypePtr, *newPathPtr)
+	new_dir, err := helpers.CreateDirectory(name + "-" + *newTypePtr, *newPathPtr)
 
 	// Copy the template to the new directory
-	err = helpers.CopyTemplate(directory)
+	err = helpers.CopyTemplate(new_dir)
 
 	if err != nil {
 		fmt.Println(err)
-		helpers.RemoveDir(directory)
+		helpers.RemoveDir(new_dir)
 		os.Exit(1)
 	}
 	// Customise the template
-	err = helpers.CustomiseTemplate(directory, name, *newTypePtr)	
+	err = helpers.CustomiseTemplate(new_dir, name, *newTypePtr)	
+
+	// Copy base to directory
+	rep_path := os.Getenv("TNG_SM_PWD")
+	source_base_dir := filepath.Join(rep_path, "base")
+	dest_base_dir := filepath.Join(new_dir, "base")
+	source_sonbase_dir := filepath.Join(rep_path, "son-mano-framework/son-mano-base")
+	dest_sonbase_dir := filepath.Join(new_dir, "base/son-mano-base")
+
+	err = helpers.CopyDir(source_base_dir, dest_base_dir)
+	err = helpers.CopyDir(source_sonbase_dir, dest_sonbase_dir)
 
 	fmt.Printf("Specific manager created\n")
 	os.Exit(0)
@@ -362,6 +372,11 @@ func HandleGenerateArg(arg *flag.FlagSet, arg_list []string) () {
 
 	// declaring
 	inputFile := arg.Args()[0]
+
+	f,_ := os.Open(inputFile)
+	fs,_ := f.Stat()
+	fmt.Printf("stats: %s\n", fs)
+
 	extension := filepath.Ext(inputFile)
 	outputName:= inputFile[0:len(inputFile)-len(extension)]
 	outputDirectory := outputName + "_payloads"
