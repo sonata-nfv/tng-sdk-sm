@@ -235,6 +235,13 @@ func CustomiseTemplate(dir, name, sm_type string) (err error) {
 	if err != nil {
 		return
 	}
+
+	// customise setup file
+	err = ReplaceTagInFile("<name>", name, filepath.Join(dir, "setup.py"))
+	if err != nil {
+		return
+	}
+
 	return
 
 }
