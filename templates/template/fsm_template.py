@@ -35,7 +35,7 @@ partner consortium (www.5gtango.eu).
 import logging
 import yaml
 from smbase.smbase import smbase
-from ssh import Client
+from .ssh import Client
 
 logging.basicConfig(level=logging.INFO)
 LOG = logging.getLogger("fsm-start-stop-configure")
@@ -63,10 +63,10 @@ class <name>FSM(smbase):
         :param description: description
         """
 
-        self.sm_name = "<name>"
+        self.sm_id = "<name>"
         self.sm_version = "0.1"
 
-        super(self.__class__, self).__init__(sm_name=self.sm_name,
+        super(self.__class__, self).__init__(sm_id=self.sm_id,
                                              sm_version=self.sm_version,
                                              connect_to_broker=connect_to_broker)
 
@@ -77,7 +77,7 @@ class <name>FSM(smbase):
 
         # send the status to the SMR
         status = 'Subscribed, waiting for alert message'
-        message = {'name': self.specific_manager_id,
+        message = {'name': self.sm_id,
                    'status': status}
         self.manoconn.publish(topic='specific.manager.registry.ssm.status',
                               message=yaml.dump(message))

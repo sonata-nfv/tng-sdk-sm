@@ -48,7 +48,7 @@ logging.getLogger("son-mano-base:messaging").setLevel(logging.INFO)
 class smbase(object):
 
     def __init__(self,
-                 sm_name= None,
+                 sm_id= None,
                  sm_version= None,
                  description=None,
                  connect_to_broker=True,
@@ -67,17 +67,17 @@ class smbase(object):
         """
 
         #Populating SSM-FSM fields
-        self.sm_name = sm_name
+        self.sm_id = sm_id
         self.sm_version = sm_version
         self.description = description
         self.uuid = None
         self.sfuuid = None
 
-        LOG.info("Starting specific manager with name: " + self.sm_name)
+        LOG.info("Starting specific manager with name: " + self.sm_id)
 
         # create and initialize broker connection
         if connect_to_broker:
-            self.manoconn = messaging.ManoBrokerRequestResponseConnection(self.sm_name + '-' + str(self.sfuuid))
+            self.manoconn = messaging.ManoBrokerRequestResponseConnection(self.sm_id + '-' + str(self.sfuuid))
             LOG.info("Specific manager connected to broker.")
 
         # register only of there is a broker connection
@@ -99,7 +99,7 @@ class smbase(object):
         else:
             self.sfuuid = ''
 
-        message = {'specific_manager_id': self.sm_name,
+        message = {'specific_manager_id': self.sm_id,
                    'version': self.sm_version,
                    "sf_uuid": self.sfuuid}
 
@@ -113,10 +113,10 @@ class smbase(object):
 
         response = yaml.load(response)
         if response['status'] != "registered":
-            LOG.error("{0} registration failed. Exit".format(self.specific_manager_id))
+            LOG.error("{0} registration failed. Exit".format(self.sm_id))
         else:
             self.uuid = response['uuid']
-            LOG.info("{0} registered with uuid:{1}".format(self.specific_manager_id, self.uuid))
+            LOG.info("{0} registered with uuid:{1}".format(self.sm_id, self.uuid))
 
             # release the registration thread
             self.wait_for_event.set()
