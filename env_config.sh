@@ -43,4 +43,5 @@ python3 setup.py develop
 # Install specific manager package
 cd $root_dir
 cd base
+cd sm-base
 python3 setup.py develop
