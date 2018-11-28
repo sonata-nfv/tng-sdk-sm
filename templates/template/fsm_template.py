@@ -35,10 +35,13 @@ partner consortium (www.5gtango.eu).
 import logging
 import yaml
 from smbase.smbase import smbase
-from .ssh import Client
+try:
+    from <name> import ssh
+except:
+    import ssh
 
 logging.basicConfig(level=logging.INFO)
-LOG = logging.getLogger("fsm-start-stop-configure")
+LOG = logging.getLogger("fsm-<name>")
 LOG.setLevel(logging.DEBUG)
 logging.getLogger("son-mano-base:messaging").setLevel(logging.INFO)
 

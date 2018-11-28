@@ -70,10 +70,13 @@ class smbase(object):
         self.sm_id = sm_id
         self.sm_version = sm_version
         self.description = description
-        self.uuid = None
-        self.sfuuid = None
+        self.sfuuid = ''
+
+        if 'sf_uuid' in os.environ:
+            self.sfuuid = os.environ['sf_uuid']
 
         LOG.info("Starting specific manager with name: " + self.sm_id)
+        LOG.info("Starting specific manager with sfuuid: " + self.sfuuid)
 
         # create and initialize broker connection
         if connect_to_broker:
@@ -94,11 +97,6 @@ class smbase(object):
         """
         LOG.info('Sending registration request...')
 
-        if 'sf_uuid' in os.environ:
-            self.sfuuid = os.environ['sf_uuid']
-        else:
-            self.sfuuid = ''
-
         message = {'specific_manager_id': self.sm_id,
                    'version': self.sm_version,
                    "sf_uuid": self.sfuuid}
@@ -115,9 +113,7 @@ class smbase(object):
         if response['status'] != "registered":
             LOG.error("{0} registration failed. Exit".format(self.sm_id))
         else:
-            self.uuid = response['uuid']
-            LOG.info("{0} registered with uuid:{1}".format(self.sm_id, self.uuid))
-
+            LOG.info("Registration succeeded")
             # release the registration thread
             self.wait_for_event.set()
 

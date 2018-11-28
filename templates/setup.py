@@ -45,19 +45,16 @@ with open(path.join(here, 'README.md'), encoding='utf-8') as f:
     long_description = f.read()
 
 setup(
-    name='sonsmbase',
+    name='<name>',
 
     version='1.0',
 
     description='SONATA FSM/SSM template',
     long_description=long_description,
 
-    # The project's main homepage.
-    url='https://github.com/sonata-nfv/son-sm',
-
     # Author details
-    author='Hadi Razzaghi Kouchaksaraei',
-    author_email='hadi.razzaghi@upb.de',
+    author='Thomas Soenen',
+    author_email='thomas.soenen@ugent.be',
 
     # Choose your license
     license='Apache 2.0',

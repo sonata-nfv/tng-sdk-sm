@@ -35,10 +35,9 @@ partner consortium (www.5gtango.eu).
 import logging
 import yaml
 from smbase.smbase import smbase
-from .ssh import Client
 
 logging.basicConfig(level=logging.INFO)
-LOG = logging.getLogger("ssm-start-stop-configure")
+LOG = logging.getLogger("ssm-<name>")
 LOG.setLevel(logging.DEBUG)
 logging.getLogger("son-mano-base:messaging").setLevel(logging.INFO)
 
@@ -106,12 +105,12 @@ class <name>SSM(smbase):
         # the 'ssm_type' field in the content indicates for which type of
         # ssm this message is intended.
         if str(request["ssm_type"]) == "placement":
-            LOG.info("Start event received: " + str(request["content"]))
-            response = self.start_event(request["content"])
+            LOG.info("Placement event received: " + str(request["content"]))
+            response = self.placement_event(request["content"])
 
         if str(request["ssm_type"]) == "task":
-            LOG.info("Stop event received: " + str(request["content"]))
-            response = self.stop_event(request["content"])
+            LOG.info("Task event received: " + str(request["content"]))
+            response = self.task_event(request["content"])
 
         if str(request["ssm_type"]) == "configure":
             LOG.info("Config event received: " + str(request["content"]))

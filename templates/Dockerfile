@@ -41,7 +41,7 @@ RUN apt-get install python2.7
 ENV broker_host amqp://guest:guest@broker:5672/%2F
 ENV broker_exchange son-kernel
 
-ADD <name>-fsm /root
+ADD <name>-<type> /root
 
 WORKDIR /root/base/son-mano-base
 Run python setup.py install
