@@ -226,6 +226,7 @@ func CustomiseTemplate(dir, name, sm_type string) (err error) {
 
 	// customise Dockerfile file
 	err = ReplaceTagInFile("<name>", name, filepath.Join(dir, "Dockerfile"))
+	err = ReplaceTagInFile("<type>", sm_type, filepath.Join(dir, "Dockerfile"))
 	if err != nil {
 		return
 	}
