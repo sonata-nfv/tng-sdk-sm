@@ -309,6 +309,7 @@ func HandleExecuteArg(arg *flag.FlagSet, arg_list []string) () {
 
 	// build path to code
 	sm_name := strings.Split(name, "-")[0]
+	sm_type := strings.Split(strings.Trim(name, "/"), "-")[1]
 	code_dir := filepath.Join(dir, sm_name)
 
 	// If payload was provided, move it to execution dir
@@ -320,7 +321,7 @@ func HandleExecuteArg(arg *flag.FlagSet, arg_list []string) () {
 	} 
 
 	// Execute the command and capture the output
-	cmd_string := "import " + sm_name + "; import yaml; fsm=" + sm_name + "." + sm_name + "FSM(connect_to_broker=False);" + pyld_cmd + " event=fsm." + event_str + "(payload); print(\n\"Event output: \" + str(event))"
+	cmd_string := "import " + sm_name + "; import yaml; sm=" + sm_name + "." + sm_name + strings.ToUpper(sm_type) + "(connect_to_broker=False);" + pyld_cmd + " event=sm." + event_str + "(payload); print(\n\"Event output: \" + str(event))"
 	cmd:= exec.Command("python3", "-c", cmd_string)
 	cmd.Dir = code_dir
 	out, err := cmd.CombinedOutput()
