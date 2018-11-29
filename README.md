@@ -47,7 +47,7 @@ Build the project
 
 	go build tng-sm
 
-Install the project system wide, execute these files as root
+Install the project system wide, execute these commands as root
 
 	export GOPATH=$(pwd)/go
 	export GOBIN=/usr/bin
