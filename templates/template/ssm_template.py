@@ -109,12 +109,16 @@ class <name>SSM(smbase):
             response = self.placement_event(request["content"])
 
         if str(request["ssm_type"]) == "task":
-            LOG.info("Task event received: " + str(request["content"]))
-            response = self.task_event(request["content"])
+            LOG.info("Task event received: " + str(request))
+            response = self.task_event(request)
 
         if str(request["ssm_type"]) == "configure":
             LOG.info("Config event received: " + str(request["content"]))
             response = self.configure_event(request["content"])
+
+        if str(request["ssm_type"]) == "state":
+            LOG.info("State event received: " + str(request["content"]))
+            response = self.state_event(request["content"])
 
         # If a response message was generated, send it back to the FLM
         LOG.info("Response to request generated:" + str(response))
@@ -150,6 +154,16 @@ class <name>SSM(smbase):
 
         # Dummy content
         response = {'status': 'completed'}
+        return response
+
+    def state_event(self, content):
+        """
+        This method handles a state event.
+        """
+
+        # Dummy content
+        response = {'status': 'completed'}
+        response['content'] = 'the new state'
         return response
 
 

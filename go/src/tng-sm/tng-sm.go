@@ -331,8 +331,8 @@ func HandleExecuteArg(arg *flag.FlagSet, arg_list []string) () {
 		fmt.Printf("%s\n", err)
 		globals.RedBold.Printf("Python output:\n")
 		fmt.Printf("%s\n", out)
-		globals.RedBold.Printf("Python code:\n")
-		fmt.Printf("%s\n", cmd_string)
+		// globals.RedBold.Printf("Python code:\n")
+		// fmt.Printf("%s\n", cmd_string)
 		os.Exit(1)
 	} else {
 		globals.GreenBold.Printf("\nCommand executed successfully. Python output: \n")

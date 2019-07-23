@@ -120,6 +120,10 @@ class <name>FSM(smbase):
             LOG.info("Config event received: " + str(request["content"]))
             response = self.configure_event(request["content"])
 
+        if str(request["fsm_type"]) == "state":
+            LOG.info("State event received: " + str(request["content"]))
+            response = self.state_event(request["content"])
+
         # If a response message was generated, send it back to the FLM
         LOG.info("Response to request generated:" + str(response))
         topic = "generic.fsm." + str(self.sfuuid)
@@ -135,7 +139,7 @@ class <name>FSM(smbase):
         """
 
         # Dummy content
-        response = {'status': 'completed'}
+        response = {'status': 'COMPLETED'}
         return response
 
     def stop_event(self, content):
@@ -144,7 +148,7 @@ class <name>FSM(smbase):
         """
 
         # Dummy content
-        response = {'status': 'completed'}
+        response = {'status': 'COMPLETED'}
         return response
 
     def configure_event(self, content):
@@ -153,9 +157,23 @@ class <name>FSM(smbase):
         """
 
         # Dummy content
-        response = {'status': 'completed'}
+        response = {'status': 'COMPLETED'}
         return response
 
+    def state_event(self, content):
+        """
+        This method handles a state event.
+        """
+
+        response = {'status': 'COMPLETED'}
+    
+        if content['action'] == 'extract':
+            # extract the state out of the fsm
+            response['persist'] = 'obtained state'
+        else:
+            # inect the state in the fsm
+
+        return response
 
 def main():
     <name>FSM()
