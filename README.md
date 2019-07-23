@@ -47,8 +47,10 @@ Build the project
 
 	go build tng-sm
 
-Install the project
+Install the project system wide, execute these commands as root
 
+	export GOPATH=$(pwd)/go
+	export GOBIN=/usr/bin
 	go install tng-sm
 
 In order to test the specific managers natively, your python environment needs to be
