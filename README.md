@@ -43,7 +43,7 @@ The `tng-sm` command runs the `tng-sdk-sm` tool locally from the command line. D
 tng-sm -h
 ```
 
-More details about the subcommands can be found in the [wiki]().
+More details about the subcommands can be found in the [wiki](https://github.com/sonata-nfv/tng-sdk-sm/wiki/Usage).
 
 ## Development
 
@@ -60,6 +60,6 @@ The following lead developers are responsible for this repository and have admin
 
 - Thomas Soenen ([@tsoenen](https://github.com/tsoenen))
 
-#### Feedback-Chanel
+#### Feedback-Channel
 
 * Please use the GitHub issues to report bugs.
