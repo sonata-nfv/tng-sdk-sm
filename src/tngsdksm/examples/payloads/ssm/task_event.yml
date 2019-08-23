@@ -1,0 +1,17 @@
+---
+schedule:
+- consolidate_predefined_mapping
+- request_topology
+- request_policies
+- SLM_mapping
+- consolidate_mapping
+- network_create
+- vnf_deploy
+- vnfs_generic_envs
+- vnfs_start
+- vnf_chain
+- wan_configure
+- store_nsr
+- start_monitoring
+- inform_gk_instantiation
+ssm_type: task

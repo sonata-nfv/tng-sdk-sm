@@ -1,0 +1,23 @@
+cloudnative_deployment_units:
+- connection_points:
+  - id: data
+    port: 1883
+    type: serviceendpoint
+  id: cdu01
+  image: ubuntu:trusty
+  load_balancer_ip:
+    floating_ip: <ENTER IP HERE>
+    internal_ip: <ENTER IP HERE>
+  number_of_instances: 1
+  vim_id: 5e2d4177-f254-43d2-b818-ddf1929609ee
+descriptor_reference: df151295-a11f-4c9e-b9bc-3ada553a8b27
+descriptor_version: null
+id: 14aa73cb-988d-4df6-b072-1a8b1a6cd0e2
+status: normal operation
+version: '1'
+virtual_links:
+- connection_points_reference:
+  - data
+  - cdu01:data
+  connectivity_type: E-Tree
+  id: data-link

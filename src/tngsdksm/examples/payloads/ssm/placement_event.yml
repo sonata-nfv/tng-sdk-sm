@@ -1,0 +1,322 @@
+---
+nap: {}
+nsd:
+  author: 5GTANGO Test Team
+  connection_points:
+  - id: mgmt
+    interface: ipv4
+    type: management
+  - id: input
+    interface: ipv4
+    type: external
+  - id: output
+    interface: ipv4
+    type: external
+  description: This is a integration test artifact.
+  descriptor_schema: https://raw.githubusercontent.com/sonata-nfv/tng-schema/master/service-descriptor/nsd-schema.yml
+  name: test-nsid1v
+  network_functions:
+  - vnf_id: test_vnf1
+    vnf_name: testvnf
+    vnf_vendor: eu.5gtango
+    vnf_version: '0.1'
+  service_specific_managers:
+  - description: SSM to do some dummy config on the cirros for testing purposes
+    id: config
+    image: tsoenen/config-ssm
+    options:
+    - key: type
+      value: task
+    - key: type
+      value: configure
+    - key: type
+      value: state
+    - key: type
+      value: placement
+  uuid: 2786868c-aae5-4862-a233-31fc15f7fb25
+  vendor: eu.5gtango
+  version: '0.1'
+  virtual_links:
+  - connection_points_reference:
+    - mgmt
+    - test_vnf1:mgmt
+    connectivity_type: E-LAN
+    id: mgmt
+  - connection_points_reference:
+    - input
+    - test_vnf1:input
+    connectivity_type: E-Line
+    id: input-2-test_vnf
+  - connection_points_reference:
+    - test_vnf1:output
+    - output
+    connectivity_type: E-Line
+    id: test_vnf-2-output
+topology:
+  vims:
+    nep_list:
+    - nep_name: bcn-1
+      nep_uuid: 028f83d5-d2c9-44be-8097-e5ee01246d2d
+      type: endpoint
+    - nep_name: bcn-2
+      nep_uuid: 92f0fc68-8bb4-46b5-b931-bdb2753a9f55
+      type: endpoint
+    - nep_name: bcn-3
+      nep_uuid: b8bb058e-b2df-476e-961a-f3810a34ff59
+      type: endpoint
+    - nep_name: bcn-4
+      nep_uuid: d978f44d-0922-4c53-b7b1-1a16c0456eb5
+      type: endpoint
+    - nep_name: core-datacenter
+      nep_uuid: 70a3f5e8-a9f8-4a19-b02d-df8fba0b8871
+      type: endpoint
+    - nep_name: service-platform-management
+      nep_uuid: 580e3e92-44bd-4db7-959e-cb5455d2014f
+      type: endpoint
+    - nep_name: NeP_1
+      nep_uuid: 12345678-1234-1234-1234-123456789012
+      type: endpoint
+    vim_list:
+    - core_total: 30
+      core_used: 0
+      memory_total: 100000
+      memory_used: 0
+      type: vm
+      vim_city: Athens-North
+      vim_domain: default
+      vim_endpoint: 10.100.32.200
+      vim_name: Athens-200
+      vim_uuid: 11111111-2222-3333-4444-555555555555
+    - core_total: 30
+      core_used: 0
+      memory_total: 100000
+      memory_used: 0
+      type: vm
+      vim_city: Athens-North
+      vim_domain: default
+      vim_endpoint: 10.100.32.201
+      vim_name: Athens-201
+      vim_uuid: 55555555-2222-3333-4444-555555555555
+    - core_total: 40
+      core_used: 0
+      memory_total: 115070096
+      memory_used: 36883896
+      type: container
+      vim_city: Athens
+      vim_domain: 'null'
+      vim_endpoint: 'null'
+      vim_name: k8s
+      vim_uuid: 88888888-2222-3333-4444-888888888888
+  wims:
+  - attached_endpoints:
+    - 028f83d5-d2c9-44be-8097-e5ee01246d2d
+    - 92f0fc68-8bb4-46b5-b931-bdb2753a9f55
+    - b8bb058e-b2df-476e-961a-f3810a34ff59
+    - d978f44d-0922-4c53-b7b1-1a16c0456eb5
+    - 70a3f5e8-a9f8-4a19-b02d-df8fba0b8871
+    - 580e3e92-44bd-4db7-959e-cb5455d2014f
+    attached_vims:
+    - 11111111-2222-3333-4444-555555555555
+    name: TapiWanBcn
+    qos:
+    - bandwidth: 10000
+      bandwidth_unit: Mbps
+      latency: 10
+      latency_unit: ms
+      node_1: 028f83d5-d2c9-44be-8097-e5ee01246d2d
+      node_2: 92f0fc68-8bb4-46b5-b931-bdb2753a9f55
+    - bandwidth: 10000
+      bandwidth_unit: Mbps
+      latency: 10
+      latency_unit: ms
+      node_1: 028f83d5-d2c9-44be-8097-e5ee01246d2d
+      node_2: b8bb058e-b2df-476e-961a-f3810a34ff59
+    - bandwidth: 10000
+      bandwidth_unit: Mbps
+      latency: 10
+      latency_unit: ms
+      node_1: 028f83d5-d2c9-44be-8097-e5ee01246d2d
+      node_2: d978f44d-0922-4c53-b7b1-1a16c0456eb5
+    - bandwidth: 10000
+      bandwidth_unit: Mbps
+      latency: 10
+      latency_unit: ms
+      node_1: 028f83d5-d2c9-44be-8097-e5ee01246d2d
+      node_2: 70a3f5e8-a9f8-4a19-b02d-df8fba0b8871
+    - bandwidth: 10000
+      bandwidth_unit: Mbps
+      latency: 10
+      latency_unit: ms
+      node_1: 028f83d5-d2c9-44be-8097-e5ee01246d2d
+      node_2: 580e3e92-44bd-4db7-959e-cb5455d2014f
+    - bandwidth: 10000
+      bandwidth_unit: Mbps
+      latency: 10
+      latency_unit: ms
+      node_1: 028f83d5-d2c9-44be-8097-e5ee01246d2d
+      node_2: 11111111-2222-3333-4444-555555555555
+    - bandwidth: 10000
+      bandwidth_unit: Mbps
+      latency: 10
+      latency_unit: ms
+      node_1: 92f0fc68-8bb4-46b5-b931-bdb2753a9f55
+      node_2: b8bb058e-b2df-476e-961a-f3810a34ff59
+    - bandwidth: 10000
+      bandwidth_unit: Mbps
+      latency: 10
+      latency_unit: ms
+      node_1: 92f0fc68-8bb4-46b5-b931-bdb2753a9f55
+      node_2: d978f44d-0922-4c53-b7b1-1a16c0456eb5
+    - bandwidth: 10000
+      bandwidth_unit: Mbps
+      latency: 10
+      latency_unit: ms
+      node_1: 92f0fc68-8bb4-46b5-b931-bdb2753a9f55
+      node_2: 70a3f5e8-a9f8-4a19-b02d-df8fba0b8871
+    - bandwidth: 10000
+      bandwidth_unit: Mbps
+      latency: 10
+      latency_unit: ms
+      node_1: 92f0fc68-8bb4-46b5-b931-bdb2753a9f55
+      node_2: 580e3e92-44bd-4db7-959e-cb5455d2014f
+    - bandwidth: 10000
+      bandwidth_unit: Mbps
+      latency: 10
+      latency_unit: ms
+      node_1: 92f0fc68-8bb4-46b5-b931-bdb2753a9f55
+      node_2: 11111111-2222-3333-4444-555555555555
+    - bandwidth: 10000
+      bandwidth_unit: Mbps
+      latency: 10
+      latency_unit: ms
+      node_1: b8bb058e-b2df-476e-961a-f3810a34ff59
+      node_2: d978f44d-0922-4c53-b7b1-1a16c0456eb5
+    - bandwidth: 10000
+      bandwidth_unit: Mbps
+      latency: 10
+      latency_unit: ms
+      node_1: b8bb058e-b2df-476e-961a-f3810a34ff59
+      node_2: 70a3f5e8-a9f8-4a19-b02d-df8fba0b8871
+    - bandwidth: 10000
+      bandwidth_unit: Mbps
+      latency: 10
+      latency_unit: ms
+      node_1: b8bb058e-b2df-476e-961a-f3810a34ff59
+      node_2: 580e3e92-44bd-4db7-959e-cb5455d2014f
+    - bandwidth: 10000
+      bandwidth_unit: Mbps
+      latency: 10
+      latency_unit: ms
+      node_1: b8bb058e-b2df-476e-961a-f3810a34ff59
+      node_2: 11111111-2222-3333-4444-555555555555
+    - bandwidth: 10000
+      bandwidth_unit: Mbps
+      latency: 10
+      latency_unit: ms
+      node_1: d978f44d-0922-4c53-b7b1-1a16c0456eb5
+      node_2: 70a3f5e8-a9f8-4a19-b02d-df8fba0b8871
+    - bandwidth: 10000
+      bandwidth_unit: Mbps
+      latency: 10
+      latency_unit: ms
+      node_1: d978f44d-0922-4c53-b7b1-1a16c0456eb5
+      node_2: 580e3e92-44bd-4db7-959e-cb5455d2014f
+    - bandwidth: 10000
+      bandwidth_unit: Mbps
+      latency: 10
+      latency_unit: ms
+      node_1: d978f44d-0922-4c53-b7b1-1a16c0456eb5
+      node_2: 11111111-2222-3333-4444-555555555555
+    - bandwidth: 10000
+      bandwidth_unit: Mbps
+      latency: 10
+      latency_unit: ms
+      node_1: 70a3f5e8-a9f8-4a19-b02d-df8fba0b8871
+      node_2: 580e3e92-44bd-4db7-959e-cb5455d2014f
+    - bandwidth: 10000
+      bandwidth_unit: Mbps
+      latency: 10
+      latency_unit: ms
+      node_1: 70a3f5e8-a9f8-4a19-b02d-df8fba0b8871
+      node_2: 11111111-2222-3333-4444-555555555555
+    - bandwidth: 10000
+      bandwidth_unit: Mbps
+      latency: 10
+      latency_unit: ms
+      node_1: 580e3e92-44bd-4db7-959e-cb5455d2014f
+      node_2: 11111111-2222-3333-4444-555555555555
+    uuid: 373df903-da67-45d2-9906-d77a9bf5c4dc
+uuid: 9159776f-026c-4789-8613-db4d43643cec
+vnfds:
+- author: 5GTANGO Test Team
+  connection_points:
+  - id: mgmt
+    interface: ipv4
+    type: management
+  - id: input
+    interface: ipv4
+    type: external
+  - id: output
+    interface: ipv4
+    type: external
+  description: This is a integration test artifact.
+  descriptor_schema: https://raw.githubusercontent.com/sonata-nfv/tng-schema/master/function-descriptor/vnfd-schema.yml
+  function_specific_managers:
+  - description: FSM to do some dummy config on the cirros for testing purposes
+    id: cirros
+    image: tsoenen/cirros-fsm
+    options:
+    - key: type
+      value: start
+    - key: type
+      value: configure
+    - key: type
+      value: state
+  instance_uuid: beee663b-10b5-43c3-b2db-1aa149256e60
+  name: testvnf
+  uuid: 44021b72-3f0a-4277-aa42-3d7ccc4d98f0
+  vendor: eu.5gtango
+  version: '0.1'
+  virtual_deployment_units:
+  - connection_points:
+    - id: eth0
+      interface: ipv4
+      type: internal
+    - id: eth1
+      interface: ipv4
+      type: internal
+    - id: eth2
+      interface: ipv4
+      type: internal
+    id: vdu01-beee663b-10b5-43c3-b2db-1aa149256e60
+    resource_requirements:
+      cpu:
+        vcpus: 1
+      memory:
+        size: 2
+        size_unit: GB
+      storage:
+        size: 10
+        size_unit: GB
+    vm_image: http://www.google.com
+    vm_image_format: qcow2
+    vm_image_md5: ee1eca47dc88f4879d8a229cc70a07c6
+  virtual_links:
+  - connection_points_reference:
+    - vdu01:eth0
+    - mgmt
+    connectivity_type: E-LAN
+    dhcp: true
+    id: mgmt-2-mgmt
+  - connection_points_reference:
+    - vdu01:eth1
+    - input
+    connectivity_type: E-Line
+    dhcp: true
+    id: input-2-vdu01
+  - connection_points_reference:
+    - vdu01:eth2
+    - output
+    connectivity_type: E-Line
+    dhcp: true
+    id: vdu01-2-output

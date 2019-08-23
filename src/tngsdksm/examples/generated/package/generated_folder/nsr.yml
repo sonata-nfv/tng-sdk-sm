@@ -1,0 +1,21 @@
+descriptor_reference: a463afa9-8b06-4ff7-b2ee-d01c8b5f7886
+descriptor_version: null
+id: 7596c272-f721-4058-8ef1-22e45e83d7f1
+instance_name: foobar
+network_functions:
+- vnfr_id: e354fbdd-c3bf-4bde-b375-a3676a9abcfa
+- vnfr_id: 89e014c9-2fdf-41a8-885f-bf3a4234a4af
+- vnfr_id: 4c20c05b-b41b-48d3-bdf6-bc1bfeae38dc
+- vnfr_id: 14aa73cb-988d-4df6-b072-1a8b1a6cd0e2
+- vnfr_id: a5c3ec3d-a91e-457a-8b9a-569fdf6527e1
+- vnfr_id: 90280b71-a520-4778-a0c8-07bac839a5c1
+- vnfr_id: 5a6ff448-8330-4e14-a8d4-30eb2e5f3bea
+- vnfr_id: 9a7767b4-ee7b-433c-a81a-2c0b4b8361a0
+status: normal operation
+version: '1'
+virtual_links:
+- connection_points_reference:
+  - data
+  - cnf1:data
+  connectivity_type: E-LAN
+  id: data-2-cnfs
