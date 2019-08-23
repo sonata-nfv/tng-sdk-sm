@@ -50,8 +50,9 @@ def install_deps():
         for r in requirements:
             if "git+" in r:
                 links.append(r.strip())
+                new_pkgs.append(r.split('=')[-1].strip())
             else:
-                new_pkgs.append(r.strip())
+              new_pkgs.append(r.strip())
         return new_pkgs, links
 
 longdesc = """
@@ -60,6 +61,9 @@ Component to generate and test Service and Function Specific Managers.
 
 # load dependencies
 pkgs, new_links = install_deps()
+
+print(pkgs)
+print(new_links)
 
 setup(name='tngsdksm',
       license='Apache License, Version 2.0',
