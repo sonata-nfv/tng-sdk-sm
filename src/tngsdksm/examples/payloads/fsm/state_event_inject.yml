@@ -1,0 +1,71 @@
+---
+action: inject
+state: '10.120.0.205
+
+  add some state'
+vnfr:
+  descriptor_reference: 6d2bd980-2242-43a8-94f1-3c9d32a00955
+  descriptor_version: vnfr-schema-01
+  id: 264dd23e-56f4-4a23-b3c1-07d333c9392d
+  name: testvnf
+  status: offline
+  version: '1'
+  virtual_deployment_units:
+  - id: vdu01
+    number_of_instances: 1
+    resource_requirements:
+      cpu:
+        vcpus: 1
+      memory:
+        size: 2
+        size_unit: GB
+      storage:
+        size: 10
+        size_unit: GB
+    vdu_reference: testvnf:vdu01-264dd23e-56f4-4a23-b3c1-07d333c9392d
+    vm_image: http://www.google.com
+    vnfc_instance:
+    - connection_points:
+      - id: eth0
+        interface:
+          address: 10.100.33.129
+          hardware_address: fa:16:3e:88:f4:2c
+        type: internal
+      - id: eth1
+        interface:
+          address: 10.100.33.127
+          hardware_address: fa:16:3e:b6:01:cc
+        type: internal
+      - id: eth2
+        interface:
+          address: 10.100.33.118
+          hardware_address: fa:16:3e:f1:16:0f
+        type: internal
+      id: '0'
+      vc_id: 89d147e0-3fee-4118-b094-37b807d76094
+      vim_id: 8641bfea-7570-4418-9953-7e33cc152cc3
+  virtual_links:
+  - connection_points_reference:
+    - vdu01:eth0
+    - mgmt
+    connectivity_type: E-LAN
+    descriptor_reference: mgmt-2-mgmt
+    dhcp: true
+    id: c5be181f-bfcf-48bc-888f-f2454332b272_ns_mgmt
+    vim_id: 8641bfea-7570-4418-9953-7e33cc152cc3
+  - connection_points_reference:
+    - vdu01:eth1
+    - input
+    connectivity_type: E-Line
+    descriptor_reference: input-2-vdu01
+    dhcp: true
+    id: c5be181f-bfcf-48bc-888f-f2454332b272_ns_input-2-test_vnf
+    vim_id: 8641bfea-7570-4418-9953-7e33cc152cc3
+  - connection_points_reference:
+    - vdu01:eth2
+    - output
+    connectivity_type: E-Line
+    descriptor_reference: vdu01-2-output
+    dhcp: true
+    id: c5be181f-bfcf-48bc-888f-f2454332b272_ns_test_vnf-2-output
+    vim_id: 8641bfea-7570-4418-9953-7e33cc152cc3
