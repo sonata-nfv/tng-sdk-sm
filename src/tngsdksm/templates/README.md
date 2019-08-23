@@ -1,6 +1,8 @@
-## Implementation
-* implemented in Python 3.4
-* dependecies: amqp-storm
+This is the <name>-<type> specific manager.
 
-## Build
-`docker build -t <name> -f <name>-fsm/Dockerfile .`
+# Customise
+
+Edit file at /<name>-<type>/<name>/<name>.py
+
+# Build
+`docker build -t <container_name> -f <name>-<type>/Dockerfile .`

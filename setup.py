@@ -81,6 +81,7 @@ setup(name='tngsdksm',
       entry_points={
           'console_scripts': [
               'tng-sm=tngsdksm.__main__:main',
+              'tng-sdk-sm=tngsdksm.__main__:main'
           ],
       },
       setup_requires=[])
