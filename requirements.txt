@@ -2,6 +2,6 @@ setuptools
 requests
 pyaml
 paramiko
-git+https://github.com/sonata-nfv/tng-sdk-package.git
-git+https://github.com/sonata-nfv/tng-cli.git
+tngsdk.package @ git+https://github.com/sonata-nfv/tng-sdk-package.git
+tngclib @ git+https://github.com/sonata-nfv/tng-cli.git
 
