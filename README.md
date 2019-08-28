@@ -21,18 +21,18 @@ This component is implemented in Python3. Its requirements are specified [here](
 
 ### Automated
 
-The automated installation requires `pip` (more specifically `pip3`).
+The automated installation requires `pip3`.
 
 ```bash
-$ pip install git+https://github.com/sonata-nfv/tng-sdk-sm
+$ pip3 install git+https://github.com/sonata-nfv/tng-sdk-sm
 ```
 
 ### Manual
 
 ```bash
-$ git clone git@github.com:sonata-nfv/tng-sdk-sm.git
+$ git clone https://github.com/sonata-nfv/tng-sdk-sm
 $ cd tng-sdk-sm
-$ python setup.py install
+$ python3 setup.py install
 ```
 
 ## Usage

@@ -63,6 +63,9 @@ Component to generate and test Service and Function Specific Managers.
 # load dependencies
 pkgs, new_links = install_deps()
 
+print(pkgs)
+print(new_links)
+
 setup(name='tngsdksm',
       license='Apache License, Version 2.0',
       version='1.0',
@@ -79,6 +82,7 @@ setup(name='tngsdksm',
       entry_points={
           'console_scripts': [
               'tng-sm=tngsdksm.__main__:main',
+              'tng-sdk-sm=tngsdksm.__main__:main'
           ],
       },
       setup_requires=[])
