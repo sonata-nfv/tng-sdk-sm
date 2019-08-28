@@ -2,5 +2,6 @@ setuptools
 requests
 pyaml
 paramiko
+amqpstorm
 tngsdk.package
 tngcli
