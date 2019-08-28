@@ -24,7 +24,7 @@ This component is implemented in Python3. Its requirements are specified [here](
 The automated installation requires `pip3`.
 
 ```bash
-$ pip3 install git+https://github.com/sonata-nfv/tng-sdk-sm
+$ pip3 install tngsdksm
 ```
 
 ### Manual

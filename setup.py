@@ -68,7 +68,7 @@ print(new_links)
 
 setup(name='tngsdksm',
       license='Apache License, Version 2.0',
-      version='1.0',
+      version='1.0.0',
       url='https://github.com/sonata-nfv/tng-sdk-sm',
       author='Thomas Soenen',
       author_email='thomas.soenen@ugent.be',
