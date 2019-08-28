@@ -1,2 +1,6 @@
+include README
+include LICENSE
+include requirements.txt
+
 # Include the templates
 graft src/tngsdksm/templates
