@@ -53,7 +53,6 @@ To contribute to the development of this 5GTANGO component, you may use the very
 
 This 5GTANGO component is published under Apache 2.0 license. Please see the LICENSE file for more details.
 
----
 #### Lead Developers
 
 The following lead developers are responsible for this repository and have admin rights. They can, for example, merge pull requests.
@@ -62,4 +61,5 @@ The following lead developers are responsible for this repository and have admin
 
 #### Feedback-Channel
 
-* Please use the GitHub issues to report bugs.
+* Mailing list [sonata-dev-list](mailto:sonata-dev@lists.atosresearch.eu)
+* Gitter room [![Gitter](https://badges.gitter.im/sonata-nfv/Lobby.svg)](https://gitter.im/sonata-nfv/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
