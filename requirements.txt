@@ -1,5 +1,6 @@
 setuptools
 requests
+pyyaml==5.4.1
 pyaml
 paramiko
 amqpstorm
